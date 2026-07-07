@@ -31,6 +31,11 @@ export class EC2Construct extends Construct {
             ec2.Port.tcp(22),
             'Allow k3s'
         );
+        SecurityGroup.addIngressRule(
+            ec2.Peer.anyIpv4(),
+            ec2.Port.tcp(30080),
+            "K3s NodePort"
+        );
 
         const keypair = new ec2.CfnKeyPair(this, 'KeyPair', {
             keyName: 'ec2-key',
