@@ -4,7 +4,7 @@ import * as fs from 'fs'
 import { Construct } from 'constructs';
 
 export interface EC2ConstructProps {
-    vpc: ec2.Vpc,
+    vpc: ec2.IVpc,
 }
 
 export class EC2Construct extends Construct {
@@ -48,6 +48,6 @@ export class EC2Construct extends Construct {
         new cdk.CfnOutput(this, 'EC2PublicIP', {
             value: this.instance.instancePublicIp,
             exportName: 'ec2-public-ip'
-        });
+        }); 
     }
 }
