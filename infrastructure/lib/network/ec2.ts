@@ -1,6 +1,8 @@
 import * as cdk from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
+import * as iam from "aws-cdk-lib/aws-iam";
 import * as fs from 'fs'
+
 import { Construct } from 'constructs';
 
 export interface EC2ConstructProps {
@@ -24,12 +26,12 @@ export class EC2Construct extends Construct {
         SecurityGroup.addIngressRule(
             ec2.Peer.anyIpv4(),
             ec2.Port.tcp(6443),
-            'Allow SSH'
+            'Allow k3s'
         );
         SecurityGroup.addIngressRule(
             ec2.Peer.anyIpv4(),
             ec2.Port.tcp(22),
-            'Allow k3s'
+            'Allow SSH'
         );
         SecurityGroup.addIngressRule(
             ec2.Peer.anyIpv4(),
@@ -42,6 +44,16 @@ export class EC2Construct extends Construct {
             publicKeyMaterial: fs.readFileSync('ec2-key.pub','utf-8')
         })
 
+        const role = new iam.Role(this, "EC2Role", {
+            assumedBy: new iam.ServicePrincipal("ec2.amazonaws.com"),
+        });
+
+        role.addManagedPolicy(
+            iam.ManagedPolicy.fromAwsManagedPolicyName(
+                "AmazonSSMManagedInstanceCore"
+            )
+        );
+
         //EC2 instane
         this.instance = new ec2.Instance(this, 'WebServerInstance',{
             vpc: props.vpc,
@@ -52,8 +64,10 @@ export class EC2Construct extends Construct {
                 subnetType: ec2.SubnetType.PUBLIC
             },
             securityGroup: SecurityGroup,
-            keyName: keypair.keyName!
+            keyName: keypair.keyName!,
+            role: role
         });
+
 
         new cdk.CfnOutput(this, 'EC2PublicIP', {
             value: this.instance.instancePublicIp,
