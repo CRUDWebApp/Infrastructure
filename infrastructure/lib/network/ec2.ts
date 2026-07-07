@@ -47,7 +47,11 @@ export class EC2Construct extends Construct {
 
         new cdk.CfnOutput(this, 'EC2PublicIP', {
             value: this.instance.instancePublicIp,
-            exportName: 'ec2-public-ip'
+            exportName: 'EC2PublicIP'
+        });
+        new cdk.CfnOutput(this, 'EC2ID', {
+            value: this.instance.instanceId,
+            exportName: 'EC2ID'
         }); 
     }
 }

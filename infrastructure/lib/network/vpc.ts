@@ -39,12 +39,16 @@ export class VPCConstruct extends Construct {
             exportName: 'vpcID'
         });
 
-        new cdk.CfnOutput(this, 'PublicSubnetIds', {
-            value: this.vpc.publicSubnets.map(s => s.subnetId).join(',')
+        new cdk.CfnOutput(this, 'VPCPublicSubnetIds', {
+            value: this.vpc.publicSubnets.map(s => s.subnetId).join(','),
         });
 
-        new cdk.CfnOutput(this, 'PrivateSubnetIds', {
-            value: this.vpc.privateSubnets.map(s => s.subnetId).join(',')
+        new cdk.CfnOutput(this, 'VPCPrivateSubnetIds', {
+            value: this.vpc.privateSubnets.map(s => s.subnetId).join(','),
+        });
+        new cdk.CfnOutput(this, 'VPCAZ', {
+            value: cdk.Fn.join(', ', this.vpc.availabilityZones),
+            exportName: 'VPCAZ'
         });
     }
 }
