@@ -23,8 +23,13 @@ export class EC2Construct extends Construct {
         //SSH
         SecurityGroup.addIngressRule(
             ec2.Peer.anyIpv4(),
-            ec2.Port.tcp(22),
+            ec2.Port.tcp(6443),
             'Allow SSH'
+        );
+        SecurityGroup.addIngressRule(
+            ec2.Peer.anyIpv4(),
+            ec2.Port.tcp(22),
+            'Allow k3s'
         );
 
         const keypair = new ec2.CfnKeyPair(this, 'KeyPair', {
