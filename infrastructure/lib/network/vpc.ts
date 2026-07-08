@@ -14,6 +14,7 @@ export class VPCConstruct extends Construct {
         this.vpc = new ec2.Vpc(this, 'WebApp_VPC', {
             vpcName: props.VPCName,
             ipAddresses: ec2.IpAddresses.cidr('10.0.0.0/16'),
+            natGateways: 0,
             maxAzs: 2,
             subnetConfiguration: [
                 {
@@ -38,12 +39,16 @@ export class VPCConstruct extends Construct {
             exportName: 'vpcID'
         });
 
-        new cdk.CfnOutput(this, 'PublicSubnetIds', {
-            value: this.vpc.publicSubnets.map(s => s.subnetId).join(',')
+        new cdk.CfnOutput(this, 'VPCPublicSubnetIds', {
+            value: this.vpc.publicSubnets.map(s => s.subnetId).join(','),
         });
 
-        new cdk.CfnOutput(this, 'PrivateSubnetIds', {
-            value: this.vpc.privateSubnets.map(s => s.subnetId).join(',')
+        new cdk.CfnOutput(this, 'VPCPrivateSubnetIds', {
+            value: this.vpc.privateSubnets.map(s => s.subnetId).join(','),
+        });
+        new cdk.CfnOutput(this, 'VPCAZ', {
+            value: cdk.Fn.join(', ', this.vpc.availabilityZones),
+            exportName: 'VPCAZ'
         });
     }
 }

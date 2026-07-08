@@ -1,10 +1,12 @@
 import * as cdk from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
+import * as iam from "aws-cdk-lib/aws-iam";
 import * as fs from 'fs'
+
 import { Construct } from 'constructs';
 
 export interface EC2ConstructProps {
-    vpc: ec2.Vpc,
+    vpc: ec2.IVpc,
 }
 
 export class EC2Construct extends Construct {
@@ -23,14 +25,34 @@ export class EC2Construct extends Construct {
         //SSH
         SecurityGroup.addIngressRule(
             ec2.Peer.anyIpv4(),
+            ec2.Port.tcp(6443),
+            'Allow k3s'
+        );
+        SecurityGroup.addIngressRule(
+            ec2.Peer.anyIpv4(),
             ec2.Port.tcp(22),
             'Allow SSH'
+        );
+        SecurityGroup.addIngressRule(
+            ec2.Peer.anyIpv4(),
+            ec2.Port.tcp(30080),
+            "K3s NodePort"
         );
 
         const keypair = new ec2.CfnKeyPair(this, 'KeyPair', {
             keyName: 'ec2-key',
             publicKeyMaterial: fs.readFileSync('ec2-key.pub','utf-8')
         })
+
+        const role = new iam.Role(this, "EC2Role", {
+            assumedBy: new iam.ServicePrincipal("ec2.amazonaws.com"),
+        });
+
+        role.addManagedPolicy(
+            iam.ManagedPolicy.fromAwsManagedPolicyName(
+                "AmazonSSMManagedInstanceCore"
+            )
+        );
 
         //EC2 instane
         this.instance = new ec2.Instance(this, 'WebServerInstance',{
@@ -42,12 +64,18 @@ export class EC2Construct extends Construct {
                 subnetType: ec2.SubnetType.PUBLIC
             },
             securityGroup: SecurityGroup,
-            keyName: keypair.keyName!
+            keyName: keypair.keyName!,
+            role: role
         });
+
 
         new cdk.CfnOutput(this, 'EC2PublicIP', {
             value: this.instance.instancePublicIp,
-            exportName: 'ec2-public-ip'
+            exportName: 'EC2PublicIP'
         });
+        new cdk.CfnOutput(this, 'EC2ID', {
+            value: this.instance.instanceId,
+            exportName: 'EC2ID'
+        }); 
     }
 }
