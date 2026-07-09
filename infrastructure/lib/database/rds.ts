@@ -48,11 +48,11 @@ export class RDSConstruct extends Construct {
             },
 
             credentials: rds.Credentials.fromSecret(credentials),
-
+            
             databaseName: "webapp",
 
             instanceType: ec2.InstanceType.of(
-                ec2.InstanceClass.T4G,
+                ec2.InstanceClass.T3,
                 ec2.InstanceSize.MICRO
             ),
 
