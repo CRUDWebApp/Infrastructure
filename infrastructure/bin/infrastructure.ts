@@ -5,9 +5,12 @@ import * as cdk from "aws-cdk-lib";
 import { VPCStack } from "../lib/stacks/VPCStack";
 import { EC2Stack } from "../lib/stacks/EC2Stack";
 import { ECRStack } from "../lib/stacks/ECRStack";
-import { MonitorStack } from "../lib/stacks/MonitorStack";
+import { CloudFrontStack } from "../lib/stacks/CloudFrontStack";
+import { RDSStack } from "../lib/stacks/RDSStack";
 
 const app = new cdk.App();
+
+// new CloudFrontStack(app, 'CloudFrontStack');
 
 const vpcStack = new VPCStack(app, "VPCStack");
 
@@ -17,7 +20,6 @@ const ec2Stack = new EC2Stack(app, "EC2Stack", {
 
 const ecrStack = new ECRStack(app, "ECRStack");
 
-const monitorStack = new MonitorStack(app, "MonitorStack", {
-    instanceId: ec2Stack.instanceId,
-    repositoryName: ecrStack.repositoryName,
-});
+
+
+new RDSStack(app, 'RDSStack', {vpcStack, ec2Stack});
