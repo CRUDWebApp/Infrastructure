@@ -26,7 +26,13 @@ export class RDSConstruct extends Construct {
         rdsSecurityGroup.addIngressRule(
             props.backendSecurityGroup,
             ec2.Port.tcp(5432),
-            "Allow PostgreSQL from Backend"
+            "Allow PostgreSQL from Backend in EC2"
+        );
+        
+        rdsSecurityGroup.addIngressRule(
+            ec2.Peer.anyIpv4(),
+            ec2.Port.tcp(5432),
+            "Allow PostgreSQL from Backend in local"
         );
 
         const credentials = new rds.DatabaseSecret(this, "DatabaseSecret", {
@@ -62,7 +68,7 @@ export class RDSConstruct extends Construct {
 
             multiAz: false,
 
-            publiclyAccessible: false,
+            publiclyAccessible: true,
 
             securityGroups: [rdsSecurityGroup],
 
