@@ -60,7 +60,7 @@ export class EC2Construct extends Construct {
         //EC2 instance
         this.instance = new ec2.Instance(this, 'WebServerInstance',{
             vpc: props.vpc,
-            instanceType: new ec2.InstanceType('t3.micro'),
+            instanceType: new ec2.InstanceType('t3.small'),
             machineImage: ec2.MachineImage.latestAmazonLinux2023(),
             vpcSubnets: 
             {
