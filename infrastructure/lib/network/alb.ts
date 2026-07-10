@@ -45,12 +45,6 @@ export class ALBConstruct extends Construct {
             },
         });
 
-        // Allow ALB to reach EC2 NodePort 30080
-        props.instance.connections.allowFrom(
-            albSecurityGroup,
-            ec2.Port.tcp(30080),
-            "Allow ALB to EC2 NodePort"
-        );
 
         const listener = this.alb.addListener("HttpListener", {
             port: 80,
@@ -68,7 +62,7 @@ export class ALBConstruct extends Construct {
             ],
 
             healthCheck: {
-                path: "/api/getinfor",
+                path: "/health",
                 healthyHttpCodes: "200",
                 interval: cdk.Duration.seconds(30),
                 timeout: cdk.Duration.seconds(5),
