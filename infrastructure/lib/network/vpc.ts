@@ -26,6 +26,11 @@ export class VPCConstruct extends Construct {
                     name: 'private-subnet',
                     subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
                     cidrMask: 24,
+                },
+                {
+                    name: 'isolated-subnet',
+                    subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
+                    cidrMask: 24,
                 }
             ],
             enableDnsHostnames: true,

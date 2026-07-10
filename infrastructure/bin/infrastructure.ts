@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import * as cdk from "aws-cdk-lib";
-import * as ec2 from "aws-cdk-lib/aws-ec2";
 
 import { VPCStack } from "../lib/stacks/VPCStack";
 import { EC2Stack } from "../lib/stacks/EC2Stack";
@@ -25,12 +24,6 @@ const albStack = new ALBStack(app, "ALBStack", {
     instance: ec2Stack.instance,
 });
 
-// Cho phép ALB truy cập backend trên EC2
-ec2Stack.instance.connections.allowFrom(
-    albStack.alb,
-    ec2.Port.tcp(3000),
-    "Allow ALB to access backend"
-);
 
 new RDSStack(app, "RDSStack", {
     vpcStack,

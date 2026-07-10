@@ -45,7 +45,7 @@ export class RDSConstruct extends Construct {
             vpc: props.vpc,
 
             vpcSubnets: {
-                subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS
+                subnetType: ec2.SubnetType.PRIVATE_ISOLATED
             },
 
             credentials: rds.Credentials.fromSecret(credentials),

@@ -18,7 +18,7 @@ export class RDSStack extends cdk.Stack {
 
         const rds = new RDSConstruct(this, "RDS", {
             vpc: props.vpcStack.vpc,
-            backendSecurityGroup: props.ec2Stack.instance.connections.securityGroups[0]
+            backendSecurityGroup: props.ec2Stack.securityGroup
         });
 
         this.database = rds.database;

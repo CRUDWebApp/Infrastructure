@@ -11,6 +11,7 @@ export interface EC2ConstructProps {
 
 export class EC2Construct extends Construct {
     public readonly instance: ec2.Instance;
+    public readonly securityGroup: ec2.SecurityGroup;
 
     constructor(scope: Construct, id:  string, props: EC2ConstructProps){
         super(scope, id)
@@ -54,7 +55,9 @@ export class EC2Construct extends Construct {
             )
         );
 
-        //EC2 instane
+        this.securityGroup = SecurityGroup;
+
+        //EC2 instance
         this.instance = new ec2.Instance(this, 'WebServerInstance',{
             vpc: props.vpc,
             instanceType: new ec2.InstanceType('t3.micro'),
