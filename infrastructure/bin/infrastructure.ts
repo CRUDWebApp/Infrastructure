@@ -21,7 +21,8 @@ const ec2Stack = new EC2Stack(app, "EC2Stack", {
 
 const albStack = new ALBStack(app, "ALBStack", {
     vpc: vpcStack.vpc,
-    instance: ec2Stack.instance,
+    instance1: ec2Stack.instance1,
+    instance2: ec2Stack.instance2,
 });
 
 

@@ -8,7 +8,8 @@ import { ALBConstruct } from "../network/alb";
 
 export interface ALBStackProps extends cdk.StackProps {
     vpc: ec2.IVpc;
-    instance: ec2.Instance;
+    instance1: ec2.Instance;
+    instance2: ec2.Instance;
 }
 
 export class ALBStack extends cdk.Stack {
@@ -21,7 +22,8 @@ export class ALBStack extends cdk.Stack {
 
         const albConstruct = new ALBConstruct(this, "ALBConstruct", {
             vpc: props.vpc,
-            instance: props.instance,
+            instance1: props.instance1,
+            instance2: props.instance2
         });
 
         this.alb = albConstruct.alb;

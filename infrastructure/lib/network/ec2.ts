@@ -10,7 +10,8 @@ export interface EC2ConstructProps {
 }
 
 export class EC2Construct extends Construct {
-    public readonly instance: ec2.Instance;
+    public readonly instance1: ec2.Instance;
+    public readonly instance2: ec2.Instance;
     public readonly securityGroup: ec2.SecurityGroup;
 
     constructor(scope: Construct, id:  string, props: EC2ConstructProps){
@@ -56,15 +57,31 @@ export class EC2Construct extends Construct {
         );
 
         this.securityGroup = SecurityGroup;
+        const publicSubnets = props.vpc.selectSubnets({
+            subnetType: ec2.SubnetType.PUBLIC,
+        }).subnets;
 
         //EC2 instance
-        this.instance = new ec2.Instance(this, 'WebServerInstance',{
+        this.instance1 = new ec2.Instance(this, 'WebServerInstance1',{
             vpc: props.vpc,
             instanceType: new ec2.InstanceType('t3.small'),
             machineImage: ec2.MachineImage.latestAmazonLinux2023(),
             vpcSubnets: 
             {
-                subnetType: ec2.SubnetType.PUBLIC
+                subnets: [publicSubnets[0]],
+            },
+            securityGroup: SecurityGroup,
+            keyName: keypair.keyName!,
+            role: role
+        });
+
+        this.instance2 = new ec2.Instance(this, 'WebServerInstance2',{
+            vpc: props.vpc,
+            instanceType: new ec2.InstanceType('t3.small'),
+            machineImage: ec2.MachineImage.latestAmazonLinux2023(),
+            vpcSubnets: 
+            {
+                subnets: [publicSubnets[1]],
             },
             securityGroup: SecurityGroup,
             keyName: keypair.keyName!,
@@ -72,13 +89,22 @@ export class EC2Construct extends Construct {
         });
 
 
-        new cdk.CfnOutput(this, 'EC2PublicIP', {
-            value: this.instance.instancePublicIp,
-            exportName: 'EC2PublicIP'
+        new cdk.CfnOutput(this, 'EC2-1PublicIP', {
+            value: this.instance1.instancePublicIp,
+            exportName: 'EC2-1PublicIP'
         });
-        new cdk.CfnOutput(this, 'EC2ID', {
-            value: this.instance.instanceId,
-            exportName: 'EC2ID'
+        new cdk.CfnOutput(this, 'EC2-1ID', {
+            value: this.instance1.instanceId,
+            exportName: 'EC2-1ID'
+        });
+
+        new cdk.CfnOutput(this, 'EC2-2PublicIP', {
+            value: this.instance2.instancePublicIp,
+            exportName: 'EC2-2PublicIP'
+        });
+        new cdk.CfnOutput(this, 'EC2-2ID', {
+            value: this.instance2.instanceId,
+            exportName: 'EC2-2ID'
         }); 
     }
 }
