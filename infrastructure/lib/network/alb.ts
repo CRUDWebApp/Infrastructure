@@ -57,6 +57,8 @@ export class ALBConstruct extends Construct {
 
             protocol: elbv2.ApplicationProtocol.HTTP,
 
+            loadBalancingAlgorithmType: elbv2.TargetGroupLoadBalancingAlgorithmType.LEAST_OUTSTANDING_REQUESTS,
+
             targets: [
                 new targets.InstanceTarget(props.instance),
             ],
