@@ -45,15 +45,15 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Setting public key for EC2Stack
-        working-directory: ./infrastructur
+        working-directory: ./infrastructure
         run: echo "${{ secrets.SSH_PUBLIC_KEY }}" > ec2-key.pub
 
       - name: CDK build
-        working-directory: ./infrastructure`
+        working-directory: ./infrastructure
         run: npx cdk synth --all
 
       - name: Deploy CDK
-        working-directory: ./infrastructur
+        working-directory: ./infrastructure
         run: npx cdk deploy --require-approval never --outputs-file outputs.json --all
 
       - name: Upload Cloud Assembly Output
