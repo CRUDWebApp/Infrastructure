@@ -42,14 +42,14 @@ jobs:
 
       - name: Install dependencies
         working-directory: ./infrastructure
-        run: pnpm install--frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Setting public key for EC2Stack
         working-directory: ./infrastructur
         run: echo "${{ secrets.SSH_PUBLIC_KEY }}" > ec2-key.pub
 
       - name: CDK build
-        working-directory: ./infrastructure
+        working-directory: ./infrastructure`
         run: npx cdk synth --all
 
       - name: Deploy CDK
