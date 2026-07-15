@@ -1,0 +1,53 @@
+name: Provision CDK
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+  workflow_dispatch:
+
+
+jobs:
+  
+  Provision:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write   # Required for AWS OIDC authentication
+      contents: read    # Required to clone the repository
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v6
+        name: Install pnpm
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v6.1.0
+        with: 
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Set up NodeJs
+        uses: actions/setup-nodes@v6
+        with: 
+          node-version: 24
+      
+      - name: Install dependencies
+        working-directory: ./infrastructure
+        run: npm install
+
+      - name: Setting public key for EC2Stack
+        run: echo "${{ secrets.SSH_PUBLIC_KEY }}" > ec2-key.pub
+
+      - name: Run CDK bootstrap
+        run: npx cdk bootstrap
+
+      - name: Deploy CDK
+        run: npx cdk deploy --require-approval never --outputs-file outputs.json --all
+
+      - name: Upload Cloud Assembly Output
+        uses: actions/upload-artifact@v4
+        with:
+          name: output
+          path: ./outputs.json
