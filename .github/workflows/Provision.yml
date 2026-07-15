@@ -25,16 +25,18 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+        with:
+            version: 11.12.0
+            
       - name: Set up NodeJs
         uses: actions/setup-node@v6
         with: 
           node-version: 22
           cache: 'pnpm'
+          cache-dependency-path: infrastructure/pnpm-lock.yaml
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
-        with:
-            version: 11.12.0
 
       - name: Install dependencies
         working-directory: ./infrastructure
@@ -44,9 +46,9 @@ jobs:
         working-directory: ./infrastructur
         run: echo "${{ secrets.SSH_PUBLIC_KEY }}" > ec2-key.pub
 
-      - name: Run CDK bootstrap
+      - name: CDK build
         working-directory: ./infrastructur
-        run: npx cdk bootstrap
+        run: npx cdk synth --all
 
       - name: Deploy CDK
         working-directory: ./infrastructur
