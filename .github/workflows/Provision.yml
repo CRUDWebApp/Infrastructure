@@ -28,7 +28,9 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v6
         with:
-            version: 11.12.0
+            version: 11
+            cache: true
+            cache_dependency_path: ./infrastructure/pnpm-lock.yaml
 
     #   - name: Set up NodeJs
     #     uses: actions/setup-node@v6
