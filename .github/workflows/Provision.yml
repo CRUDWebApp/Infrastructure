@@ -30,12 +30,12 @@ jobs:
         with:
             version: 11.12.0
 
-      - name: Set up NodeJs
-        uses: actions/setup-node@v6
-        with: 
-          node-version: 22
-          cache: 'pnpm'
-          cache-dependency-path: infrastructure/pnpm-lock.yaml
+    #   - name: Set up NodeJs
+    #     uses: actions/setup-node@v6
+    #     with: 
+    #       node-version: 22
+    #       cache: 'pnpm'
+    #       cache-dependency-path: infrastructure/pnpm-lock.yaml
 
 
       - name: Install dependencies
