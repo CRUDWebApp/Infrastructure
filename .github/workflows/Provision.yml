@@ -32,10 +32,14 @@ jobs:
         uses: actions/setup-node@v6
         with: 
           node-version: 24
-      
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
       - name: Install dependencies
         working-directory: ./infrastructure
-        run: npm install
+        run: pnpm install
 
       - name: Setting public key for EC2Stack
         run: echo "${{ secrets.SSH_PUBLIC_KEY }}" > ec2-key.pub
