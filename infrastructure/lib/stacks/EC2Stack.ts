@@ -10,7 +10,9 @@ export interface EC2StackProps extends cdk.StackProps {
 
 export class EC2Stack extends cdk.Stack {
 
-    public readonly instanceId: string;
+    public readonly instance1: ec2.Instance;
+    public readonly instance2: ec2.Instance;
+    public readonly securityGroup: ec2.SecurityGroup;
 
     constructor(scope: Construct, id: string, props: EC2StackProps) {
         super(scope, id, props);
@@ -19,6 +21,8 @@ export class EC2Stack extends cdk.Stack {
             vpc: props.vpc,
         });
 
-        this.instanceId = server.instance.instanceId;
+        this.instance1 = server.instance1;
+        this.instance2 = server.instance2;
+        this.securityGroup = server.securityGroup;
     }
 }
