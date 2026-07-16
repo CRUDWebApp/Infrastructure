@@ -46,3 +46,4 @@ jobs:
       - name: Deploy CDK
         working-directory: ./infrastructure
         run: pnpm ckd destroy --all
+        
