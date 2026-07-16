@@ -10,7 +10,7 @@ export interface EKSProps {
 }
 
 export class EKSConstruct extends Construct {
-    // public readonly eks: eks.Cluster;
+    public readonly cluster;
     constructor(scope: Construct, id: string, props: EKSProps){
         super(scope, id)
 
@@ -20,7 +20,7 @@ export class EKSConstruct extends Construct {
 
         props.rdsSG.addIngressRule(eksnodeSG, ec2.Port.tcp(5432));
 
-        const cluster = new eks.Cluster(this, 'EksCluster', {
+        this.cluster = new eks.Cluster(this, 'EksCluster', {
             version: eks.KubernetesVersion.V1_35,
 
             kubectlLayer: new KubectlV35Layer(this,'kubectl'),
@@ -33,11 +33,18 @@ export class EKSConstruct extends Construct {
 
             securityGroup: eksnodeSG,
 
-            removalPolicy: cdk.RemovalPolicy.DESTROY
+            removalPolicy: cdk.RemovalPolicy.DESTROY,
+            albController: {
+                version: eks.AlbControllerVersion.V2_17_1
+            }
         });
 
-        cluster.addNodegroupCapacity('NodeGroup', {
+        this.cluster.addNodegroupCapacity('NodeGroup', {
             instanceTypes: [new ec2.InstanceType('t3.small')],
+
+            subnets: {
+                subnetType: ec2.SubnetType.PUBLIC
+            },
 
             minSize: 1,
 
@@ -45,5 +52,10 @@ export class EKSConstruct extends Construct {
 
             maxSize: 3
         });
+
+        new cdk.CfnOutput(this, 'EKSClusterName', {
+            value: this.cluster.clusterName,
+            exportName: 'EKSClusterName'
+        })
     }
 }

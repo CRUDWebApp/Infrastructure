@@ -2,13 +2,13 @@ import * as cdk from "aws-cdk-lib";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as elbv2 from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import * as targets from "aws-cdk-lib/aws-elasticloadbalancingv2-targets";
+import {AutoScalingGroup} from 'aws-cdk-lib/aws-autoscaling'
 
 import { Construct } from "constructs";
 
 export interface ALBProps {
     vpc: ec2.IVpc;
-    instance1: ec2.Instance;
-    instance2: ec2.Instance;
+    AutoScalingGroup: AutoScalingGroup;
 }
 
 export class ALBConstruct extends Construct {
@@ -61,8 +61,7 @@ export class ALBConstruct extends Construct {
             loadBalancingAlgorithmType: elbv2.TargetGroupLoadBalancingAlgorithmType.LEAST_OUTSTANDING_REQUESTS,
 
             targets: [
-                new targets.InstanceTarget(props.instance1),
-                new targets.InstanceTarget(props.instance2),
+                props.AutoScalingGroup
             ],
 
             healthCheck: {
@@ -74,6 +73,8 @@ export class ALBConstruct extends Construct {
                 unhealthyThresholdCount: 2,
             },
         });
+
+        props.AutoScalingGroup.connections.allowFrom(albSecurityGroup, ec2.Port.tcp(30080));
 
         new cdk.CfnOutput(this, "ALBDNSName", {
             value: this.alb.loadBalancerDnsName,

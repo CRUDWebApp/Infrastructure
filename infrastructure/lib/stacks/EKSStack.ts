@@ -1,6 +1,6 @@
 import * as cdk from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
-import { EKSConstruct } from "../Cluster/EKS";
+import { EKSConstruct } from "../Cluster/eks";
 import { Construct } from "constructs";
 
 export interface EKSStackProps extends cdk.StackProps {

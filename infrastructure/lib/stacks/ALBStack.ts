@@ -1,15 +1,14 @@
 import * as cdk from "aws-cdk-lib";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as elbv2 from "aws-cdk-lib/aws-elasticloadbalancingv2";
-
+import {AutoScalingGroup} from 'aws-cdk-lib/aws-autoscaling'
 import { Construct } from "constructs";
 
 import { ALBConstruct } from "../network/alb";
 
 export interface ALBStackProps extends cdk.StackProps {
     vpc: ec2.IVpc;
-    instance1: ec2.Instance;
-    instance2: ec2.Instance;
+    AutoScalingGroup: AutoScalingGroup;
 }
 
 export class ALBStack extends cdk.Stack {
@@ -22,8 +21,7 @@ export class ALBStack extends cdk.Stack {
 
         const albConstruct = new ALBConstruct(this, "ALBConstruct", {
             vpc: props.vpc,
-            instance1: props.instance1,
-            instance2: props.instance2
+            AutoScalingGroup: props.AutoScalingGroup
         });
 
         this.alb = albConstruct.alb;
