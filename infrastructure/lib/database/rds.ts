@@ -6,29 +6,21 @@ import { Construct } from "constructs";
 
 export interface RDSConstructProps {
     vpc: ec2.IVpc;
-    backendSecurityGroup: ec2.ISecurityGroup;
 }
 
 export class RDSConstruct extends Construct {
 
     public readonly database: rds.DatabaseInstance;
-
     public readonly secret: secretsmanager.ISecret;
+    public readonly rdsSecurityGroup: ec2.SecurityGroup;
 
     constructor(scope: Construct, id: string, props: RDSConstructProps) {
         super(scope, id);
 
-        const rdsSecurityGroup = new ec2.SecurityGroup(this, "RDSSecurityGroup", {
+        this.rdsSecurityGroup = new ec2.SecurityGroup(this, "RDSSecurityGroup", {
             vpc: props.vpc,
             allowAllOutbound: true
         });
-
-        rdsSecurityGroup.addIngressRule(
-            props.backendSecurityGroup,
-            ec2.Port.tcp(5432),
-            "Allow PostgreSQL from Backend in EC2"
-        );
-        
 
         const credentials = new rds.DatabaseSecret(this, "DatabaseSecret", {
             username: "postgres"
@@ -65,7 +57,7 @@ export class RDSConstruct extends Construct {
 
             publiclyAccessible: false,
 
-            securityGroups: [rdsSecurityGroup],
+            securityGroups: [this.rdsSecurityGroup],
 
             deletionProtection: false,
 

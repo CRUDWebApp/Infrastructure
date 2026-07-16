@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import * as cdk from "aws-cdk-lib";
 
 import { VPCStack } from "../lib/stacks/VPCStack";
@@ -7,6 +5,7 @@ import { EC2Stack } from "../lib/stacks/EC2Stack";
 import { ALBStack } from "../lib/stacks/ALBStack";
 import { ECRStack } from "../lib/stacks/ECRStack";
 import { RDSStack } from "../lib/stacks/RDSStack";
+import { EKSStack } from "../lib/stacks/EKSStack";
 // import { CloudFrontStack } from "../lib/stacks/CloudFrontStack";
 
 const app = new cdk.App();
@@ -15,22 +14,16 @@ const app = new cdk.App();
 
 const vpcStack = new VPCStack(app, "VPCStack");
 
-const ec2Stack = new EC2Stack(app, "EC2Stack", {
-    vpc: vpcStack.vpc,
-});
 
-const albStack = new ALBStack(app, "ALBStack", {
-    vpc: vpcStack.vpc,
-    instance1: ec2Stack.instance1,
-    instance2: ec2Stack.instance2,
-});
-
-
-new RDSStack(app, "RDSStack", {
-    vpcStack,
-    ec2Stack,
+const rdsStack = new RDSStack(app, "RDSStack", {
+    vpcStack
 });
 
 new ECRStack(app, "ECRStack");
+
+new EKSStack(app,'EKSStack',{
+    vpc: vpcStack.vpc,
+    rdsSG: rdsStack.rdsSG
+});
 
 app.synth();
