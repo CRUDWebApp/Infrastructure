@@ -5,8 +5,7 @@ on:
       - develop
       - main
   workflow_dispatch:
-
-
+    
 jobs:
   
   Provision:
@@ -18,9 +17,6 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v6
-        name: Install pnpm
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v6.1.0
         with: 
@@ -28,26 +24,31 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Set up NodeJs
-        uses: actions/setup-nodes@v6
-        with: 
-          node-version: 24
-      
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+        with:
+            version: 11
+            cache: true
+            cache_dependency_path: ./infrastructure/pnpm-lock.yaml
+
       - name: Install dependencies
         working-directory: ./infrastructure
-        run: npm install
+        run: pnpm install --frozen-lockfile
 
       - name: Setting public key for EC2Stack
+        working-directory: ./infrastructure
         run: echo "${{ secrets.SSH_PUBLIC_KEY }}" > ec2-key.pub
 
-      - name: Run CDK bootstrap
-        run: npx cdk bootstrap
+      - name: Build (Typescript compiler)
+        working-directory: ./infrastructure
+        run: pnpm build
 
       - name: Deploy CDK
-        run: npx cdk deploy --require-approval never --outputs-file outputs.json --all
+        working-directory: ./infrastructure
+        run: pnpm cdk deploy --require-approval never --outputs-file outputs.json --all
 
       - name: Upload Cloud Assembly Output
         uses: actions/upload-artifact@v4
         with:
           name: output
-          path: ./outputs.json
+          path: ./infrastructure/outputs.json

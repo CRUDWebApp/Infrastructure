@@ -10,4 +10,6 @@ infrastructure/outputs.json
 infrastructure/ecr-output.json
 infrastructure/*key*
 
+infrastructure/dist/
+
 webapp/
