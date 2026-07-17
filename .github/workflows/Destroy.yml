@@ -1,4 +1,4 @@
-name: Provision CDK
+name: Destroy CDK
 on:
   pull_request:
     branches:
