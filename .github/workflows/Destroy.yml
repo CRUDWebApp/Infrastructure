@@ -8,7 +8,7 @@ on:
     
 jobs:
   
-  Provision:
+  Destroy:
     runs-on: ubuntu-latest
     permissions:
       id-token: write   # Required for AWS OIDC authentication
