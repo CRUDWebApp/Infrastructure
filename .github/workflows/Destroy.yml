@@ -45,4 +45,4 @@ jobs:
 
       - name: Deploy CDK
         working-directory: ./infrastructure
-        run: pnpm cdk destroy --all
+        run: pnpm cdk destroy --all --force
