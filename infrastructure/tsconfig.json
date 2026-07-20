@@ -25,9 +25,10 @@
       "./node_modules/@types"
     ],
     "rootDir": ".",
-    "outDir": "dist"
+    "outDir": "dist/"
   },
   "exclude": [
+    "dist",
     "node_modules",
     "cdk.out"
   ]

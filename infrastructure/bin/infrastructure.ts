@@ -13,17 +13,17 @@ const app = new cdk.App();
 
 const vpcStack = new VPCStack(app, "VPCStack");
 
-
+const eksStack = new EKSStack(app,'EKSStack',{
+    vpc: vpcStack.vpc
+});
 
 const rdsStack = new RDSStack(app, "RDSStack", {
-    vpcStack
+    vpcStack,
+    eksStack
 });
 
 new ECRStack(app, "ECRStack");
 
-const eksStack = new EKSStack(app,'EKSStack',{
-    vpc: vpcStack.vpc,
-    rdsSG: rdsStack.rdsSG
-});
+
 
 app.synth();
