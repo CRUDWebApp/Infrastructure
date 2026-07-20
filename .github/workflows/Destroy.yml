@@ -46,6 +46,7 @@ jobs:
       - name: Destroy CDK
         working-directory: ./infrastructure
         run: | 
+          aws eks update-kubeconfig --region "$REGION" --name "$CLUSTER_NAME"
           echo "Deleting k8s resources..."
           kubectl delete svc crud-app-service
           kubectl delete deployment api-deployment
