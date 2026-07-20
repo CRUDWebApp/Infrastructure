@@ -12,7 +12,8 @@ export class EKSStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props: EKSStackProps){
         super(scope,id)
         const eks = new EKSConstruct(this, 'EKSStack',{
-            vpc: props.vpc
+            vpc: props.vpc,
+            clustername: 'EKSCluster'
         });
         this.cluster = eks.cluster;
     }

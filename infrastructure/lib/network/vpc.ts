@@ -21,7 +21,9 @@ export class VPCConstruct extends Construct {
                 {
                     name: 'eks-subnet',
                     subnetType: ec2.SubnetType.PUBLIC,
-                    cidrMask: 24
+                    cidrMask: 24,
+                    mapPublicIpOnLaunch: true,
+                    
                 },
                 // {
                 //     name: 'eks-subnet',
@@ -49,38 +51,18 @@ export class VPCConstruct extends Construct {
             'Allow HTTPS traffic from within the VPC'
         );
 
-        this.vpc.addGatewayEndpoint('S3Endpoint', {
-            service: ec2.GatewayVpcEndpointAwsService.S3,
-        });
-
-        // const interfaceServices = [
-        //     { name: 'EKS', service: ec2.InterfaceVpcEndpointAwsService.EKS },
-        //     { name: 'EKSAuth', service: ec2.InterfaceVpcEndpointAwsService.EKS_AUTH },
-        //     { name: 'ECRAPI', service: ec2.InterfaceVpcEndpointAwsService.ECR },
-        //     { name: 'ECRDocker', service: ec2.InterfaceVpcEndpointAwsService.ECR_DOCKER },
-        //     { name: 'EC2', service: ec2.InterfaceVpcEndpointAwsService.EC2 },
-        //     { name: 'STS', service: ec2.InterfaceVpcEndpointAwsService.STS },
-        //     { name: 'SSM', service: ec2.InterfaceVpcEndpointAwsService.SSM},
-        //     { name: 'SSMMessages', service: ec2.InterfaceVpcEndpointAwsService.SSM_MESSAGES},
-        //     { name: "EC2Messages", service: ec2.InterfaceVpcEndpointAwsService.EC2_MESSAGES}
-        // ];
-
-        // interfaceServices.forEach((item) => {
-        //     this.vpc.addInterfaceEndpoint(`${item.name}Endpoint`,{
-        //         service: item.service,
-        //         subnets: {
-        //             subnetGroupName: 'eks-subnet'
-        //         },
-        //         securityGroups: [vpceSecurityGroup]
-        //     })
-        // })
-
-
-
-
 
         cdk.Tags.of(this.vpc).add('Environment', 'test');
         cdk.Tags.of(this.vpc).add('Project','testing')
+
+        // need tag if use nlb
+        this.vpc.publicSubnets.forEach(subnet => {
+            cdk.Tags.of(subnet).add('kubernetes.io/role/elb', '1');
+        });
+
+        // this.vpc.isolatedSubnets.forEach(subnet => {
+        //     cdk.Tags.of(subnet).add('kubernetes.io/role/internal-elb', '1');
+        // });
 
 
 

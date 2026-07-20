@@ -20,7 +20,7 @@
                 clusterName: props.clustername,
                 vpc: props.vpc,
                 vpcSubnets: [{
-                    subnetGroupName: 'eks-subnet'
+                    subnetGroupName: 'eks-subnet',
                 }],
                 
                 defaultCapacityType: eks.DefaultCapacityType.NODEGROUP,
@@ -32,6 +32,7 @@
                 kubectlLayer: new KubectlV35Layer(this, 'kubectl'),
 
                 authenticationMode: eks.AuthenticationMode.API,
+
 
             });
             const myCliPrincipalArn =  fs.readFileSync('Arn.txt','utf-8')

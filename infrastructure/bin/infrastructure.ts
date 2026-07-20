@@ -19,7 +19,6 @@ const eksStack = new EKSStack(app,'EKSStack',{
 
 const rdsStack = new RDSStack(app, "RDSStack", {
     vpcStack,
-    eksStack
 });
 
 new ECRStack(app, "ECRStack");

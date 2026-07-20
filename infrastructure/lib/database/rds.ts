@@ -1,5 +1,4 @@
 import * as ec2 from "aws-cdk-lib/aws-ec2";
-import * as eks from 'aws-cdk-lib/aws-eks'
 import * as cdk from 'aws-cdk-lib';
 import * as rds from "aws-cdk-lib/aws-rds";
 import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
@@ -7,7 +6,6 @@ import { Construct } from "constructs";
 
 export interface RDSConstructProps {
     vpc: ec2.IVpc;
-    cluster: eks.ICluster
 }
 
 export class RDSConstruct extends Construct {
@@ -68,11 +66,13 @@ export class RDSConstruct extends Construct {
             removalPolicy: cdk.RemovalPolicy.DESTROY
         });
 
-        this.database.connections.allowFrom(
-            props.cluster,
+        // Allow entire VPC CIDR to reach RDS on 5432
+        // This covers EKS nodes (public subnet) → RDS (isolated subnet)
+        this.rdsSecurityGroup.addIngressRule(
+            ec2.Peer.ipv4(props.vpc.vpcCidrBlock),
             ec2.Port.tcp(5432),
-            "Allow EKS Cluster to connect to RDS",
-        )
+            "Allow VPC traffic to connect to RDS"
+        );
 
         new cdk.CfnOutput(this, "DatabaseEndpoint", {
             value: this.database.dbInstanceEndpointAddress
