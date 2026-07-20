@@ -49,11 +49,13 @@ jobs:
           EKS_OUT=$(aws cloudformation describe-stacks --stack-name EKSStack --query "Stacks[0].Outputs" --output json)
           CLUSTER_NAME=$(echo "$EKS_OUT" | jq -r '.[] | select(.OutputKey | contains("ClusterName")) | .OutputValue')
           aws eks update-kubeconfig --region us-east-1 --name "$CLUSTER_NAME"
+          
           echo "Deleting k8s resources..."
-          kubectl delete svc crud-app-service
-          kubectl delete deployment crud-app
+          kubectl delete svc crud-app-service --ignore-not-found
+          kubectl delete deployment crud-app --ignore-not-found
           kubectl delete job prisma-migrate --ignore-not-found
           kubectl delete secret backend-secret ecr-secret --ignore-not-found
+
 
           echo "Waiting for Load Balancer to be deleted..."
           while [ "$(aws elb describe-load-balancers --region us-east-1 \
