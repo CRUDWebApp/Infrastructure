@@ -41,7 +41,7 @@ jobs:
 
       - name: Build (Typescript compiler)
         working-directory: ./infrastructure
-        run: pnpm build
+        run: pnpm run build
 
       - name: Deploy CDK
         working-directory: ./infrastructure
