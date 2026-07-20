@@ -45,7 +45,9 @@ jobs:
 
       - name: Destroy CDK
         working-directory: ./infrastructure
-        run: | 
+        run: |
+          EKS_OUT=$(aws cloudformation describe-stacks --stack-name EKSStack --query "Stacks[0].Outputs" --output json)
+          CLUSTER_NAME=$(echo "$EKS_OUT" | jq -r '.[] | select(.OutputKey | contains("ClusterName")) | .OutputValue')
           aws eks update-kubeconfig --region "$REGION" --name "$CLUSTER_NAME"
           echo "Deleting k8s resources..."
           kubectl delete svc crud-app-service
