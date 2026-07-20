@@ -51,7 +51,7 @@ jobs:
           aws eks update-kubeconfig --region us-east-1 --name "$CLUSTER_NAME"
           echo "Deleting k8s resources..."
           kubectl delete svc crud-app-service
-          kubectl delete deployment api-deployment
+          kubectl delete deployment crud-app
           kubectl delete job prisma-migrate --ignore-not-found
           kubectl delete secret backend-secret ecr-secret --ignore-not-found
 
