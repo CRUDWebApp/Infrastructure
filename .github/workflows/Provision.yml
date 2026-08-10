@@ -39,9 +39,9 @@ jobs:
         working-directory: ./infrastructure
         run: echo "${{ secrets.SSH_PUBLIC_KEY }}" > ec2-key.pub
 
-      - name: Build (Typescript compiler)
+      - name: Build
         working-directory: ./infrastructure
-        run: pnpm run build
+        run: pnpm cdk synth
 
       - name: Run CDK bootstrap
         working-directory: ./infrastructure
