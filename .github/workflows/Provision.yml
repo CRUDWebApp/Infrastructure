@@ -43,6 +43,10 @@ jobs:
         working-directory: ./infrastructure
         run: pnpm run build
 
+      - name: Run CDK bootstrap
+        working-directory: ./infrastructure
+        run: pnpm cdk bootstrap
+
       - name: Deploy CDK
         working-directory: ./infrastructure
         run: pnpm cdk deploy --require-approval never --outputs-file outputs.json --all
