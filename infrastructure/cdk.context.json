@@ -1,5 +1,9 @@
 {
-  "availability-zones:account=675492141691:region=us-east-1": [
+  "hosted-zone:account=541535100151:domainName=demo-app.indevs.in:region=us-east-1": {
+    "Id": "/hostedzone/Z02277062I1NEB5CMPEJE",
+    "Name": "demo-app.indevs.in."
+  },
+  "availability-zones:account=541535100151:region=us-east-1": [
     "us-east-1a",
     "us-east-1b",
     "us-east-1c",

@@ -1,20 +1,22 @@
-import * as cdk from 'aws-cdk-lib';
-import { Construct } from 'constructs';
+import * as cdk from "aws-cdk-lib";
+import { Construct } from "constructs";
+import * as s3 from 'aws-cdk-lib/aws-s3'
+import { CloudFrontConstruct } from "../network/cloudfront";
 
-import { S3Construct } from '../Repository/s3';
-import { CloudFrontConstruct } from '../network/cloudfront';
 
+export interface CloudFrontStackProps extends cdk.StackProps {
+    bucket: s3.IBucket;
+}
 
-export class CloudFrontStack extends cdk.Stack{
-    constructor(scope: Construct, id: string, props?: cdk.StackProps){
-        super(scope,id,props);
+export class CloudFrontStack extends cdk.Stack {
+        public readonly distribution;
 
-        const s3 = new S3Construct(this, 'S3', {
-            BucketName: 's3bucket-test-27112005'
+    constructor(scope: Construct, id: string, props: CloudFrontStackProps) {
+        super(scope, id);
+
+        const cloudfront = new CloudFrontConstruct(this, "CloudFront", {
+            bucket: props.bucket
         });
-
-        new CloudFrontConstruct(this, 'CloudFront', {
-            bucket: s3.bucket   
-        });
+        this.distribution = cloudfront.distribution;
     }
 }

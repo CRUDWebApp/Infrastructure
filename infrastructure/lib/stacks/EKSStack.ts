@@ -10,7 +10,7 @@ export interface EKSStackProps extends cdk.StackProps {
 export class EKSStack extends cdk.Stack {
     public readonly cluster;
     constructor(scope: Construct, id: string, props: EKSStackProps){
-        super(scope,id)
+        super(scope,id, props)
         const eks = new EKSConstruct(this, 'EKSStack',{
             vpc: props.vpc,
             clustername: 'EKSCluster'

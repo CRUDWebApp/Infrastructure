@@ -1,10 +1,10 @@
 import * as cdk from "aws-cdk-lib";
+import * as ec2 from "aws-cdk-lib/aws-ec2";
 import { Construct } from "constructs";
-import { VPCStack } from "./VPCStack";
 import { RDSConstruct } from "../database/rds";
 
 export interface RDSStackProps extends cdk.StackProps {
-    vpcStack: VPCStack;
+    vpc: ec2.IVpc;
 }
 
 export class RDSStack extends cdk.Stack {
@@ -16,7 +16,7 @@ export class RDSStack extends cdk.Stack {
         super(scope, id, props);
 
         const rds = new RDSConstruct(this, "RDS", {
-            vpc: props.vpcStack.vpc,
+            vpc: props.vpc,
         });
 
         this.database = rds.database;
